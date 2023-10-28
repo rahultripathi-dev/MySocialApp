@@ -2,7 +2,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
-import { storage } from '../screens/mainScreens/Data';
+import { storage } from '../screens/mainScreens/home/Data';
 
 const Header = ({navigation, showModal, setShowModal,addanimation}) => {
   const [userdata,setUserData] = useMMKVStorage('user', storage, '');
@@ -20,7 +20,7 @@ const Header = ({navigation, showModal, setShowModal,addanimation}) => {
     setUserData({...data})
     navigation.reset({
       index: 0,
-      routes: [{name: 'SocialApp'}],
+      routes: [{name: 'RootNavigation'}],
     })    
   }
   return (

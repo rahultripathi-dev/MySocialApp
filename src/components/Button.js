@@ -6,7 +6,6 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
 const width = Dimensions.get('window').width;
 
 const CommonButton = ({
@@ -16,9 +15,9 @@ const CommonButton = ({
   requestCameraPermission,
   screenName,
   onPress,
-  customStyle
+  customStyle,
+  navigation
 }) => {
-  const navigation = useNavigation();
 
   return (
     <View>
@@ -30,7 +29,7 @@ const CommonButton = ({
           } else if (name === 'CameraApp') {
             requestCameraPermission();
           } else {
-            if (screenName) navigation.navigate(screenName);
+            if (screenName) navigation?.navigate(screenName);
           }
         }}>
         <Text style={styles.buttonText(textColor)}>{name}</Text>

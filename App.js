@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {View, Image, Dimensions} from 'react-native';
-import {Root} from './src/Root';
+import {Root, Routes} from './src/navigation/Routes';
 import SplashScreen from 'react-native-splash-screen';
-import { NativeModules } from 'react-native';
+import RootNavigation from './src/navigation/RootNavigation';
 
 
 // const nativeModule = NativeModules.DeviceIdModule;
@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   return (
-        <Root />
+        <RootNavigation />
   );
 }
 

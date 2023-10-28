@@ -1,8 +1,7 @@
 import {View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {addScreenStyle as style} from '../screens/mainScreens/styles/styles';
+import {addScreenStyle as style} from '../styles/styles';
 import {Text, TextInput, Button} from 'react-native-paper';
-import {all} from 'axios';
 
 export const CommonInput = ({
   value,

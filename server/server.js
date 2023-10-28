@@ -4,8 +4,9 @@ const app = express();
 const db = require('./app/models');
 const path = require('path');
 const multer = require('multer');
+var admin = require('firebase-admin');
 
-
+// db
 const dbConfig = require('./app/config/db.config');
 
 const Role = db.role;
@@ -26,7 +27,7 @@ db.mongoose
     process.exit();
   });
 
-// set port, listen for requests
+// set port, listen for requests, express config
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
@@ -78,5 +79,13 @@ app.use(express.json());
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/country.routes')(app);
-require('./app/routes/post.routes')(app,upload);
+require('./app/routes/post.routes')(app, upload);
+// require('./app/routes/notification.routes')(app);
 module.exports = app;
+
+// notification
+
+var serviceAccount = require('./socialapp-e95b1-firebase-adminsdk-mgc7y-7bae574f6f.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});

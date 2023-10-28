@@ -5,7 +5,6 @@ const userPost = new mongoose.Schema({
   location: String,
   description: String,
   likes:[String],
-  dislikes:Number,
   userId:String
 });
 
