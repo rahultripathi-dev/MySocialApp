@@ -138,18 +138,18 @@ export const options = {
     password: '',
     label: 'password',
   },
-  {
-    instaUserName: '',
-    label: 'Instagram User Name',
-  },
-  {
-    shortBio: '',
-    label: 'Your short bio',
-  },
-  {
-    country: '',
-    label: 'Country',
-  },
+  // {
+  //   instaUserName: '',
+  //   label: 'Instagram User Name',
+  // },
+  // {
+  //   shortBio: '',
+  //   label: 'Your short bio',
+  // },
+  // {
+  //   country: '',
+  //   label: 'Country',
+  // },
   {
     role: ['user', 'moderator'],
   },

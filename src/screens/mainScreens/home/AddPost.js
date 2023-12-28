@@ -15,16 +15,19 @@ import {CommonInput} from '../../../components/TextInput';
 import {launchImageLibrary} from 'react-native-image-picker';
 import CommonButton from '../../../components/Button';
 
+
+export const handleImagePicker = async () => {
+  const {assets} = await launchImageLibrary(options);
+  return assets
+};
+
 const AddPost = ({navigation, onPress, onClose}) => {
   const [location, setLocation] = useState(null);
   const [description, setDescription] = useState(null);
   const [image, setImage] = useState('');
  
 
-  const handleImagePicker = async () => {
-    const {assets} = await launchImageLibrary(options);
-    setImage(assets);
-  };
+ 
 
   return (
     <TouchableOpacity
@@ -57,7 +60,10 @@ const AddPost = ({navigation, onPress, onClose}) => {
           ) : null}
           <TouchableOpacity
             style={styles.chooseImage}
-            onPress={() => handleImagePicker()}>
+            onPress={async () => {
+             const res=await handleImagePicker()
+             setImage(res);
+              }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon name="insert-photo" size={25} color={'#fff'} />
               <Text style={styles.chooseImageText}>Choose Image</Text>

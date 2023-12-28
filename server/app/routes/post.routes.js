@@ -8,7 +8,7 @@ module.exports = (app, upload) => {
     res.header('Access-Control-Allow-Headers', 'x-access-token');
     next();
   });
-  app.post('/api/uploads', [authJwt.verifyToken], upload, controller.addPost);
+  app.post('/uploads', [authJwt.verifyToken], upload, controller.addPost);
 
   // Rest of your code remains the same...
   app.get('/uploads/:id', [authJwt.verifyToken], controller.getPost);

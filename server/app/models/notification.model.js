@@ -1,20 +1,13 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-  userID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
-  tokenID: {
-    type: String,
-    required: true,
-  },
-  notifications: {
-    type: [Object],
-  },
-  data: {
-    type: Object,
-  },
+  userID: String,
+  tokenID:String,
+  notifications: Object,
+  postId:String,
+  // data: {
+  //   type: Object,
+  // },
   createdAt: {
     type: Date,
     default: Date.now,

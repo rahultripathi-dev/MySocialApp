@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native';
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
    const Icons = ({name}) => {
   switch (name) {
@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
     case 'cross':
       return <Icon name={'times'} size={45} color="#10A881" />;
     default:
-      return <Icon name={'pencil'} size={45} color="#303030" />;
+      return <Icon name={name?name:'pencil'} size={22} color="#000" />;
   }
 };
 

@@ -33,12 +33,16 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+android/caches/
+android/wrapper/
+android/.temp
 
 # node.js
 #
 node_modules/
 npm-debug.log
 yarn-error.log
+server/uploads/images/
 
 # fastlane
 #

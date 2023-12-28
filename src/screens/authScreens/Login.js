@@ -4,6 +4,9 @@ import {
   Image,
   SafeAreaView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
+  StatusBar,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {CommonInput} from '../../components/TextInput';
@@ -14,32 +17,44 @@ import {useNavigation} from '@react-navigation/native';
 import {AlertBottomSnackbar} from 'react-native-bottom-snackbar';
 import {useMMKVStorage} from 'react-native-mmkv-storage';
 import {storage} from '../mainScreens/home/Data';
-import {signin, signup} from '../../api/Endpoints';
+import {googleLogin, signin, signup} from '../../api/Endpoints';
 import apiCall from '../../api/ApiCall';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {ImageConstants} from '../../assets/ImagePath';
-
+import LinearGradient from 'react-native-linear-gradient';
+import {colors} from '../../styles/styles';
+import CustomStatusBar from '../../components/StatusBar';
 
 const Login = () => {
-  const {navigate, replace} = useNavigation();
+  const navigation = useNavigation();
   const [email, setEmail] = useState();
   const [password, Setpassword] = useState();
   const [userdata, setUserData] = useMMKVStorage('user', storage, '');
   const [userInfo, setUserInfo] = useState('');
   const [gettingLoginStatus, setGettingLoginStatus] = useState(false);
 
+  const webClientId =
+    '28821822364-qjqlaj790nh9jt3io22n7jbhoefjofs7.apps.googleusercontent.com';
+
   useEffect(() => {
-    GoogleSignin.configure();
+    console.log(userdata.fcmToken)
+    GoogleSignin.configure({
+      webClientId: webClientId,
+      // androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+      // iosClientId: GOOGLE_IOS_CLIENT_ID,
+      scopes: ['profile', 'email'],
+    });
+
     _isSignedIn();
   }, []);
 
   const _isSignedIn = async () => {
     const isSignedIn = await GoogleSignin.isSignedIn();
     if (isSignedIn) {
-      alert('User is already signed in');
+      // alert('User is already signed in');
       // Set User Info if user is already signed in
       _signOut();
       // _getCurrentUserInfo();
@@ -65,14 +80,12 @@ const Login = () => {
     }
   };
 
-  const _signIn = async () => {
-    // It will prompt google Signin Widget
+  const _onGoogleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices({
-        // Check if device has Google Play Services installed
-        // Always resolves to true on iOS
         showPlayServicesUpdateDialog: true,
       });
+      await GoogleSignin.signOut();
       const userInfo = await GoogleSignin.signIn();
       console.log('User Info --> ', userInfo);
       handleLogin(userInfo);
@@ -105,38 +118,32 @@ const Login = () => {
     setGettingLoginStatus(false);
   };
 
-  const handleLogin = async data => {
-    let loginData={}
-    if(data){
-       loginData = {
-        name: data.user.name,
-        email: data.user.email,
-        password: data.user.email,
-        instaUserName: '',
-        shortBio: '',
-        country: '',
-        role: ['user', 'moderator'],
+  const handleLogin = async (googleLoginData = undefined) => {
+    let loginData = {};
+    if (googleLoginData) {
+      loginData = {
+        fcmToken: userdata?.fcmToken,
+        idToken: googleLoginData?.idToken,
+        email: googleLoginData?.user.email,
+      };
+    } else {
+      loginData = {
+        email,
+        password,
+        fcmToken: userdata?.fcmToken,
       };
     }
-   
+    console.log(loginData, 'loginData');
     try {
-      // const response = await apiCall(signin, 'POST', {email, password});
       const response = await apiCall(
-        data ? signup : signin,
+        googleLoginData ? googleLogin : signin,
         'POST',
-        data ? loginData : {email, password},
+        loginData,
       );
-      // if( response[0].toString()==='Error: Failed! Username is already in use!'){
-      //   const response = await apiCall(
-      //      signin,
-      //     'POST',
-      //     {email:data.user.email, password:data.user.email},
-      //   ); 
-      // }
-      console.log(response,"response===");
+      console.log(response, 'response===');
       AlertBottomSnackbar.show('login successfull', 'success', () => {});
       setUserData(response);
-      navigate('Feed');
+      // navigation.navigate('Feed');
     } catch (error) {
       // console.error('Error fetching data:', error.message);
       AlertBottomSnackbar.show(error.message, 'success', () => {
@@ -146,8 +153,13 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <View style={{flex: 1}}>
+    <KeyboardAvoidingView style={styles.mainContainer}>
+      <CustomStatusBar />
+      <LinearGradient
+        start={{x: 0.6, y: 0.2}}
+        end={{x: -2, y: 1.4}}
+        colors={['rgba(0,0,0,1)', '#fc0303']}
+        style={[styles.mainContainer]}>
         <Image source={ImageConstants.welcome} style={styles.image} />
         <CommonInput
           value={email}
@@ -160,44 +172,76 @@ const Login = () => {
           label={'Enter Your password'}
           secureTextEntry={true}
         />
-
         <CommonButton
-          name={'Login'}
+          buttonText={'Login'}
           screenName={'Feed'}
-          backgroundColor={'#BB2525'}
-          customStyle={{alignSelf: 'center', width: '70%'}}
+          mainContainer={{
+            marginTop: 20,
+            elevation: 5,
+            shadowColor: '#fff',
+            shadowOffset: {width: 2, height: 25},
+            shadowOpacity: 9,
+            shadowRadius: 20,
+          }}
+          buttonContainerStyle={{
+            width: width / 2,
+            alignSelf: 'center',
+            flexDirection: 'row',
+            borderRadius: 20,
+            marginHorizontal: 5,
+            padding: 5,
+            borderColor: colors.color6,
+            borderWidth: 1,
+            justifyContent: 'center',
+          }}
+          buttonTextStyle={{
+            fontSize: 20,
+            color: colors.color6,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            letterSpacing: -1,
+            lineHeight: 20,
+            paddingLeft: 20,
+            paddingHorizontal: 12,
+            paddingVertical: 5,
+          }}
           onPress={handleLogin}
         />
-        <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+        <View
+          style={{flexDirection: 'row', alignSelf: 'center', marginTop: 20}}>
           <Text style={{textAlign: 'center', fontSize: 18, color: 'gray'}}>
             Don't have account?
           </Text>
-          <Text style={styles.text1} onPress={() => navigate('SignUp')}>
+          <Text
+            style={styles.text1}
+            onPress={() => navigation.navigate('SignUp')}>
             SignUp here
           </Text>
         </View>
         <View
           style={{
-            flexDirection: 'row',
-            alignSelf: 'center',
             alignItems: 'center',
-            marginTop: 20,
           }}>
-          <Text
-            style={{color: '#fff', fontSize: 18}}
-            onPress={() => navigate('SignUp')}>
-            Or Continue with
-          </Text>
-          <TouchableOpacity onPress={_signIn}>
-            <Image
-              source={ImageConstants.google_login}
-              style={{height: width / 9, width: width / 9, resizeMode: 'cover'}}
-            />
-          </TouchableOpacity>
+          <Text style={[styles.text2, {paddingTop: 10}]}>Or</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={[styles.text2]} onPress={() => navigate('SignUp')}>
+              Continue with
+            </Text>
+            <TouchableOpacity onPress={_onGoogleSignIn}>
+              <Image
+                source={ImageConstants.google_login}
+                style={{
+                  height: width / 9,
+                  width: width / 9,
+                  resizeMode: 'cover',
+                }}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <AlertBottomSnackbar />
-      </View>
-    </SafeAreaView>
+      </LinearGradient>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -206,7 +250,7 @@ export default Login;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#3C415E',
+    // backgroundColor: '#3C415E',
   },
   image: {
     width: width,
@@ -220,5 +264,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
     paddingLeft: 5,
+  },
+  text2: {
+    color: '#fff',
+    fontSize: 18,
+    letterSpacing: 1,
+    lineHeight: 25,
   },
 });

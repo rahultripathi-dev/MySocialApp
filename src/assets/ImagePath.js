@@ -10,5 +10,10 @@ export const ImageConstants={
     notification:require('./images/notification.png'),
     profile:require('./images/profile.png'),
     profile_active:require('./images/profile_active.png'),
+    location:require('./images/location.png'),
+    plus:require('./images/plus.png'),
+    changePhoto:require('./images/changePhoto.png'),
+    verified:require('./images/verified.png'),
+    warning:require('./images/warning.png'),
     
 }

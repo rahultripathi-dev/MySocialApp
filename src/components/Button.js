@@ -4,55 +4,50 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import React from 'react';
+import LinearGradient from 'react-native-linear-gradient';
 const width = Dimensions.get('window').width;
 
 const CommonButton = ({
-  name,
-  backgroundColor,
-  textColor,
+  buttonText,
   requestCameraPermission,
   screenName,
   onPress,
-  customStyle,
-  navigation
+  navigation,
+  buttonTextStyle,
+  buttonContainerStyle,
+  children = () => <View />,
+  mainContainer
 }) => {
-
   return (
-    <View>
-      <TouchableOpacity
-        style={[styles.button, {backgroundColor: backgroundColor,...customStyle}]}
-        onPress={() => {
-          if (onPress) {
-            onPress();
-          } else if (name === 'CameraApp') {
-            requestCameraPermission();
-          } else {
-            if (screenName) navigation?.navigate(screenName);
-          }
-        }}>
-        <Text style={styles.buttonText(textColor)}>{name}</Text>
-      </TouchableOpacity>
-    </View>
+    <Pressable
+      onPress={() => {
+        if (onPress) {
+          onPress();
+        } else if (name === 'CameraApp') {
+          requestCameraPermission();
+        } else {
+          if (screenName) navigation?.navigate(screenName);
+        }
+      }}
+      style={({pressed}) => ({
+        ...mainContainer,
+        opacity: pressed ? 0.5 : 1,
+      })}>
+      <LinearGradient
+        start={{x: 1, y: 0}}
+        end={{x: 0, y: -1}}
+        colors={['rgba(5, 5, 5, 1)', '#fd0202']}
+        style={buttonContainerStyle}>
+        {children()}
+        <Text style={buttonTextStyle}>{buttonText}</Text>
+      </LinearGradient>
+    </Pressable>
   );
 };
 
 export default CommonButton;
 
-export const styles = StyleSheet.create({
-  button: {
-    width: width / 2.3,
-    backgroundColor: '#C147E9',
-    padding: 10,
-    borderRadius: 12,
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
-  buttonText:(textColor)=>( {
-    color:textColor?textColor:"#fff" ,
-    fontSize: 16,
-    textAlign: 'center',
-    paddingVertical: 5,
-  }),
-});
+export const styles = StyleSheet.create({});
